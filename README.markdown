@@ -35,7 +35,6 @@ classes directly in your Ruby applications.
 
 Here's a short example.
 
-    require 'rubygems'
     require 'dnsimple'
 
     DNSimple::Client.username   = 'YOUR_USERNAME'

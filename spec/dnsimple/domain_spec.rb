@@ -128,6 +128,27 @@ describe DNSimple::Domain do
         expect(domain.auto_renew).to be_falsey
       end
     end
+  end
+
+  describe "#change_name_servers" do
+    let(:domain) { described_class.new(name: 'example.com') }
+
+    context "with a name server list" do
+      let(:name_server_names) { ["ns1.dnsimple.com"] }
+
+      before do
+        stub_request(:post, %r[/v1/domains/example.com/name_servers]).
+            to_return(read_fixture("domains/name_servers/success.http"))
+      end
+
+      it "builds the correct request" do
+        expect(domain.change_name_servers(name_server_names)).to eq(["ns1.dnsimple.com"])
+
+        expect(WebMock).to have_requested(:post, "https://#{CONFIG['username']}:#{CONFIG['password']}@#{CONFIG['host']}/v1/domains/example.com/name_servers").
+          with(:headers => { 'Accept' => 'application/json' })
+      end
+    end
 
   end
+
 end

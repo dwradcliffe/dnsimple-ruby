@@ -200,6 +200,26 @@ module DNSimple
       end
     end
 
+    # Change the domain's name servers.
+    #
+    # name_server_names is a list of names
+    def change_name_servers(name_server_names, options={})
+      name_servers = {}
+      name_server_names.each_with_index do |ns_name, i|
+        name_servers["ns#{i+1}"] = ns_name
+      end
+      options.merge!(:body => {name_servers: name_servers})
+
+      response = DNSimple::Client.post("/v1/domains/#{name}/name_servers", options)
+
+      case response.code
+      when 200
+        response.parsed_response
+      else
+        raise RequestError.new("Error changing name servers", response)
+      end
+    end
+
 
     private
 
